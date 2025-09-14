@@ -1,4 +1,8 @@
 import client, server
+import numpy as np
+import MNIST
+
+client_datasets, test_dataset = MNIST.load_and_prepare_data(10)
 
 # Initializing clients
 # Providing unique ID to every client connected to the server
@@ -13,16 +17,22 @@ for i in range(10):
                                         client_datasets[i]))
     print(f"[+] CLIENT{i} connected")
 
+
 # Core logic
 comm_round = int(input("[!] Enter number of communication rounds: "))
+server.choose_c()  # Choose c clients from the k clients
+
 for number in range(comm_round):
-    print("[*] Communication round {number}")
-    server.choose_c() # Choose c clients from the k clients
-    server.send_parameters() # Send parameters to a set of clients 
+    server.UPDATES = {}
+    print(f"[*] Communication round {number + 1}")
+    print(f"[*] Training on {[i.ID for i in server.CHOSEN]}")
+    server.send_parameters() # Send parameters to a subset of clients 
     epochs = int(input("[!] Enter number of epochs: "))
     # Run the training loop on every chosen client for epoch number of times
     print("[*] Training on clients in progress")
     for i in server.CHOSEN:
         if i.TRAINING: 
-            server.UPDATES[i] = i.local_training(epochs) # Store the locally trained paramters for fedAVG
+            server.UPDATES[i], fitness = i.local_training(epochs) # Store the locally trained parameters for fedAVG
+            print(f"[*] Client{i.ID} Accuracy: {fitness}")
     server.fedAvg() # Run weighted average on the received local parameters and update the global parameters for the next round
+    print()
