@@ -1,21 +1,17 @@
 import client, server
 
-# Initializing clients 
-client1 = client.Client()
-client2 = client.Client()
-client3 = client.Client()
-client4 = client.Client()
-client5 = client.Client()
-client6 = client.Client()
-client7 = client.Client()
-client8 = client.Client()
-
+# Initializing clients
 # Providing unique ID to every client connected to the server
 server = server.Server()
-server.CLIENTS = [client1, client2, client3, client4, client5, client6, client7, client8]
-for i in range(len(server.CLIENTS)):
-    server.CLIENTS[i].ID = i
-    print(f"[+] CLIENT{i} connected") 
+for i in range(10):
+    server.CLIENTS.append(client.Client(i,
+                                        np.random.randint(20, 90),
+                                        np.random.randint(20, 90),
+                                        np.random.randint(25, 100),
+                                        bool(np.random.rand() > 0.5),
+                                        bool(np.random.rand() > 0.5),
+                                        client_datasets[i]))
+    print(f"[+] CLIENT{i} connected")
 
 # Core logic
 comm_round = int(input("[!] Enter number of communication rounds: "))
