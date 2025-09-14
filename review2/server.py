@@ -53,4 +53,12 @@ class Server:
     across the chosen clients. Multiply it with the local update of the client. Sum all of it and set it as the global parameter.
     '''
     def fedAvg(self):
-        pass
+        # Initialize a dictionary to store the aggregated parameters
+        agg = {k: np.zeros_like(v) for k, v in self.GLOBAL_PARAMETERS.items()}
+        for c, upd in self.UPDATES.items():
+            weight = c.LOCAL_DATASET_SIZE / max(1, self.TOTAL_DATASET_SIZE)
+            for k in agg.keys():
+                agg[k] += weight * upd[k]
+        self.GLOBAL_PARAMETERS = agg
+
+        # Communication Round FIN
