@@ -42,7 +42,10 @@ class Server:
     This method has to send the global parameters to the server during every communication round
     '''
     def send_parameters(self):
-        pass
+        CHOSEN_SUBSET = random.sample(self.CHOSEN, 3)
+        for i in self.CLIENTS: # Choosing a subset of the chosen clients to train
+            i.TRAINING = True if i in CHOSEN_SUBSET else False
+            i.recv_parameters(self.GLOBAL_PARAMETERS) # Sends the global parameters to the client
 
     '''
     fedAVG:
