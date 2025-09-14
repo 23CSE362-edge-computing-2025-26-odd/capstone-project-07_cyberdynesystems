@@ -25,28 +25,43 @@ class Client(): The class that simulates an actual edge device.
     (FINAL) comm_interface():
     Uses TCP socket to connect to the server. Sends the local model updates, parameters of the client. Receives the global model parameters.
 """
-
 import MNIST
 
-class Client():
-    def _init_(self, cpu_usage: int, total_cores: int, ram_usage: int, total_ram: int, charge: int, idle: bool, plugged: bool):
-        self.ID = None
+class Client:
+    def __init__(self, client_id: int, cpu_usage: int, ram_usage: int, charge: int, idle: bool, plugged: bool, local_dataset):
+        self.ID = client_id
         self.CLIENT_RESOURCES =  {"CPU": cpu_usage, "RAM": ram_usage, "CHARGE": charge, "IDLE": idle, "PLUGGED": plugged}
-        self.TRAINING = None
-        self.NET = MNIST.SimpleNN()
-        self.LOCAL_DATASET_SIZE = 0
-    
-    def local_training(self, epochs):
-        print("[*] Training on CLIENT{self.ID}")
-        MNIST.ParticleSwarmOptimizer(self.NET, client_data=x) # Split the dataset and send it in
         self.TRAINING = False
-        return self.NET.get_params()
+        self.NET = MNIST.SimpleNN()
+        self.LOCAL_DATASET_SIZE = len(local_dataset)
+        self.LOCAL_DATASET = local_dataset
+
+    # Function to check the compatibility of the client with the server process
+    def compatibility_check(self) -> bool:
+        if ((self.CLIENT_RESOURCES["IDLE"] and self.CLIENT_RESOURCES["CHARGE"] >= 30) or (self.CLIENT_RESOURCES["PLUGGED"])
+                or (not self.CLIENT_RESOURCES["IDLE"] and self.CLIENT_RESOURCES["CHARGE"] >= 50)):
+            if self.CLIENT_RESOURCES["CPU"] <= 80 and self.CLIENT_RESOURCES["RAM"] <= 80:
+                return True
+            else:
+                return False
+        else:
+            return False
+
+    def local_training(self, pso_epochs):
+        print(f"[*] Training on CLIENT{self.ID}")
+        optim = MNIST.ParticleSwarmOptimizer(self.NET, client_data=self.LOCAL_DATASET)
+        for i in range(pso_epochs):
+            print(f"\t[*] Epoch {i + 1}")
+            optim.step()
+        # After training, update the client's model with the best solution found by PSO
+        self.NET.unflatten_weights(optim.gbest_pos)
+        self.TRAINING = False
+        # Return the updated parameters and the fitness
+        final_fitness = optim.calculate_fitness(optim.gbest_pos)
+        return self.NET.get_params(), final_fitness
 
     def inference(self, x):
         return self.NET.forward(x)
-
-    def compatibility_checker():
-        pass
 
     def recv_parameters(self, params_dict):
         self.NET.set_params(params_dict)
