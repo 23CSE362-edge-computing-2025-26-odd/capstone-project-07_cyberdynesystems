@@ -36,3 +36,9 @@ for number in range(comm_round):
             print(f"[*] Client{i.ID} Accuracy: {fitness}")
     server.fedAvg() # Run weighted average on the received local parameters and update the global parameters for the next round
     print()
+
+# Aggregated model accuracy calculation
+net = MNIST.SimpleNN()
+net.set_params(server.GLOBAL_PARAMETERS)
+accuracy = MNIST.evaluate_model(net, test_dataset)
+print(f"[*] Accuracy: {accuracy}")
