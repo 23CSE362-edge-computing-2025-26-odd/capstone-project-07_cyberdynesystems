@@ -7,8 +7,10 @@ Consists of 4 modules :
 *  Simulation.py
 *  MNIST.py (CI)
 
-Model: Simple Neural Network
-Optimizer: Particle Swarm Optimizer
+Model: Simple Neural Network 
+
+Optimizer: Particle Swarm Optimizer 
+
 Dataset: MNIST
 
 The model used is a simple Neural Network and the dataset, MNIST. The simulation is performed on 10 clients with 6000 images on each. 
