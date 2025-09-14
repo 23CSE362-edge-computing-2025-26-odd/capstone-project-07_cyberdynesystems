@@ -31,7 +31,11 @@ class Server:
     choose_c: Calls the compatibility check function of the client and appends the client objects to the Chosen list
     '''
     def choose_c(self): # Chooses clients based where they are fit for training the model
-        pass
+        self.CHOSEN = []
+        for i in self.CLIENTS:
+            if i.compatibility_check():
+                self.TOTAL_DATASET_SIZE += i.LOCAL_DATASET_SIZE
+                self.CHOSEN.append(i)
     
     '''
     send_parameters: 
