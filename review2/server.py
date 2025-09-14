@@ -16,7 +16,12 @@ import numpy as np
 
 class Server:
     def _init_(self, input_size=784, hidden_size=64, output_size=10):
-        self.GLOBAL_PARAMETERS = {} # Parameter that stores the weights and bias of the current model
+        self.GLOBAL_PARAMETERS = {self.GLOBAL_PARAMETERS = {
+            "w1": np.random.randn(hidden_size, input_size) * 0.1,
+            "b1": np.zeros((hidden_size, 1)),
+            "w2": np.random.randn(output_size, hidden_size) * 0.1,
+            "b2": np.zeros((output_size, 1))
+        } # Parameter that stores the weights and bias of the current model
         self.CLIENTS = [] # Store client objects (K)
         self.CHOSEN = [] # Store the chosen clients (C)
         self.UPDATES = {} # Buffer to store the local updates
