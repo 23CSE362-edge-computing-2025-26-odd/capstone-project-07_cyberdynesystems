@@ -1,36 +1,41 @@
 '''
-Preamble: 
-class Client(): The class that simulates an actual edge device. 
+Preamble:
+class Client(): The class that simulates an actual edge device.
     self.ID: (int) Assigned uniquely. Used to distinguish between clients.
-    self.CPU: (float) Simulates the CPU usage. Represents percentage of CPU.
-    self.RAM: (float) Simulates the RAM usage. Represents percentage of CPU.
-    self.TOTALRAM: (int) Total RAM 
-    self.CHARGE: (int) The battery level of the client
-    self.IDLE: (bool) to check if the device is idle
-    self.PLUGGED: (bool) to check is the device is connected to a power source
-
-    local_training(model_parameters: global model parameters i.e to be trained,
-                   epochs: number of epochs to train) -> updates to model parameters and accuracy/loss: Trains the received model by applying SGD/Adam and sends the updates
+    self.CLIENT_RESOURCES: (dict)
+        self.CLIENT_RESOURCES["CPU"]: Simulates the CPU usage of the client
+        self.CLIENT_RESOURCES["RAM"]: Simulates the RAM usage of the client
+        self.CLIENT_RESOURCES["CHARGE"]: Simulates the CHARGE of the client
+        self.CLIENT_RESOURCES["IDLE"]: Simulates the IDLE state of the client
+        self.CLIENT_RESOURCES["PLUGGED"]: Simulates the PLUGGED state of the client
+    self.TRAINING: (bool) Used to check if the client is chosen for training or inferencing
+    self.NET: Used to set up the neural network in the client-end
+    self.LOCAL_DATASET_SIZE: (int) The size of the local dataset on the client
     
-    inference(model_parameters: global model parameters in case it isnt part of training) -> output of the model: Run the model in inference mode
+    local_training(epochs: number of epochs to train):
+        updates to model parameters and accuracy/loss: Trains the received model by applying SGD/Adam and sends the updates
+
+    inference(): forward pass the input and return the output
 
     threshold_calc(): Computes the *score based on the client parameters
 
-    comm_interface(): Uses UDP socket to connect to the server. Sends the local model updates, parameters of the client. Receives the global model parameters.
+    recv_parameters(params_dict: weights and bias of the global model): Set the global model parameters to the local model
+
+    (FINAL) comm_interface():
+    Uses TCP socket to connect to the server. Sends the local model updates, parameters of the client. Receives the global model parameters.
+
 '''
 
-
 class Client():
-    def init(self, cpu_usage: int, total_cores: int, ram_usage: int, total_ram: int, charge: int, idle: bool, plugged: bool):
+    def _init_(self, cpu_usage: int, total_cores: int, ram_usage: int, total_ram: int, charge: int, idle: bool, plugged: bool):
         self.ID = None
-        self.CPU = 0
-	self.RAM = 0
-	self.TOTALRAM = 0
-	self.CHARGE = 0
-	self.IDLE = 0
+        self.CLIENT_RESOURCES =  {"CORESUSAGE": 0, "TOTALCORES": 0, "RAM": 0, "TOTALRAM": 0, "CHARGE": 0, "IDLE": None, "PLUGGED": None}
+        self.TRAINING = None
+        self.NET = None
+        self.LOCAL_DATASET_SIZE = 0
     
     def local_training(self, epochs):
-        pass
+	pass
 
     def inference(self, x):
 	pass
@@ -40,6 +45,3 @@ class Client():
 
     def recv_parameters(self, params_dict):
 	pass
-    
-    def comm_interface(self, place_holder): # Try socket programming
-        pass
