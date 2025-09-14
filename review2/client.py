@@ -25,26 +25,28 @@ class Client(): The class that simulates an actual edge device.
     (FINAL) comm_interface():
     Uses TCP socket to connect to the server. Sends the local model updates, parameters of the client. Receives the global model parameters.
 """
+
 import MNIST
 
-class Client:
-    def __init__(self, client_id: int, cpu_usage: int, ram_usage: int, charge: int, idle: bool, plugged: bool, local_dataset):
-        self.ID = client_id
+class Client():
+    def _init_(self, cpu_usage: int, total_cores: int, ram_usage: int, total_ram: int, charge: int, idle: bool, plugged: bool):
+        self.ID = None
         self.CLIENT_RESOURCES =  {"CPU": cpu_usage, "RAM": ram_usage, "CHARGE": charge, "IDLE": idle, "PLUGGED": plugged}
-        self.TRAINING = False
+        self.TRAINING = None
         self.NET = MNIST.SimpleNN()
-        self.LOCAL_DATASET_SIZE = len(local_dataset)
-        self.LOCAL_DATASET = local_dataset
-
-    # Function to check the compatibility of the client with the server process
-    def compatibility_check(self) -> bool:
-        pass
-
-    def local_training(self, pso_epochs):
-        pass
+        self.LOCAL_DATASET_SIZE = 0
+    
+    def local_training(self, epochs):
+        print("[*] Training on CLIENT{self.ID}")
+        MNIST.ParticleSwarmOptimizer(self.NET, client_data=x) # Split the dataset and send it in
+        self.TRAINING = False
+        return self.NET.get_params()
 
     def inference(self, x):
+        return self.NET.forward(x)
+
+    def compatibility_checker():
         pass
 
     def recv_parameters(self, params_dict):
-	pass
+        self.NET.set_params(params_dict)
