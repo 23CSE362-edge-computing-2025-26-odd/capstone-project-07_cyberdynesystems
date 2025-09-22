@@ -1,7 +1,9 @@
 import client, server
 import numpy as np
 import MNIST
+import time
 
+round_start_time = time.time()
 client_datasets, test_dataset = MNIST.load_and_prepare_data(10)
 
 # Initializing clients
@@ -42,3 +44,6 @@ net = MNIST.SimpleNN()
 net.set_params(server.GLOBAL_PARAMETERS)
 accuracy = MNIST.evaluate_model(net, test_dataset)
 print(f"[*] Accuracy: {accuracy}")
+round_end_time = time.time()
+round_time = round_end_time - round_start_time
+print(f"[TIMER] Communication rounds took {round_time:.2f} seconds")
